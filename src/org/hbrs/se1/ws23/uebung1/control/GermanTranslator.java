@@ -7,8 +7,13 @@ public class GermanTranslator implements Translator {
 	/**
 	 * Methode zur Übersetzung einer Zahl in eine String-Repraesentation
 	 */
-	public String translateNumber( int number ) {
+	public String translateNumber( int number ) throws IllegalArgumentException {
 		String[] strings = {"eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn"};
+		if (number < 1 || number > 10) {
+			throw new IllegalArgumentException("Übersetzung der Zahl " + number + " nicht möglich (" + version + ")");
+
+		}
+
 		return strings[number - 1];
 
 	}
@@ -17,7 +22,7 @@ public class GermanTranslator implements Translator {
 	 * Objektmethode der Klasse GermanTranslator zur Ausgabe einer Info.
 	 */
 	public void printInfo(){
-		System.out.println( "GermanTranslator v1.9, erzeugt am " + this.date );
+		System.out.println( "GermanTranslator v" + version + ", erzeugt am " + this.date );
 
 	}
 
