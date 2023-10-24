@@ -1,4 +1,4 @@
-package org.hbrs.se1.ws23.uebung2;
+package org.hbrs.se1.ws23.uebung2.Interface;
 public interface Member {
 
     /**
@@ -6,6 +6,9 @@ public interface Member {
      * zu setzen. Die ID darf nicht innerhalb des Container-Objekts gesetzt werden.
      * Die ID dient als Primärschlüssel zur Unterscheidung aller Member-Objekte.
      */
-    
-    public Integer getID();
+
+    Integer getID();
+
+    public String toString();
+
 }
