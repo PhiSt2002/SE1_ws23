@@ -84,11 +84,9 @@ public class Container {
 		// Initialisierung des Eingabe-View
 		// ToDo: Funktionsweise des Scanners erklären (F3)
 		Scanner scanner = new Scanner( System.in );
-
+		System.out.println("UserStory-Tool V1.0 by Julius P. (dedicated to all my friends)");
 		while ( true ) {
 			// Ausgabe eines Texts zur Begruessung
-			System.out.println("UserStory-Tool V1.0 by Julius P. (dedicated to all my friends)");
-
 			System.out.print( "> "  );
 
 			strInput = scanner.nextLine();
@@ -114,7 +112,7 @@ public class Container {
 				// Beispiel-Code
 				UserStory userStory = new UserStory();
 				userStory.setId(22);
-				this.addUserStory( userStory );
+				this.addUserStory(userStory);
 				this.store();
 			}
 		} // Ende der Schleife
@@ -157,13 +155,15 @@ public class Container {
 			
 			oos.writeObject( this.liste );
 			System.out.println( this.size() + " UserStory wurden erfolgreich gespeichert!");
-		}
-		catch (IOException e) {
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		  //  Delegation in den aufrufendem Context
 		  // (Anwendung Pattern "Chain Of Responsibility)
 		  throw new ContainerException("Fehler beim Abspeichern");
+
 		}
+
 	}
 
 	/*
