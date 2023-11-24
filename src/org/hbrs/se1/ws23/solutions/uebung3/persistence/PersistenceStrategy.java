@@ -17,8 +17,10 @@ import java.util.List;
  */
 
 public interface PersistenceStrategy<E> {
-    public void openConnection() throws PersistenceException;
-    public void closeConnection() throws PersistenceException;
+    public void openReadConnection() throws PersistenceException;
+    public void openWriteConnection() throws PersistenceException;
+    public void closeReadConnection() throws PersistenceException;
+    public void closeWriteConnection() throws PersistenceException;
     public void save(List<E> member) throws PersistenceException;
     public List<E> load() throws PersistenceException;
 }
