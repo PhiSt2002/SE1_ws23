@@ -28,6 +28,8 @@ public class Container {
 	// Reference to the internal strategy (e.g. MongoDB or Stream)
 	private PersistenceStrategy strategy = null;
 
+	// Flag to see, if a connection is opened
+	private boolean connectionOpen = false;
 
 	/*
 	 * Statische Methode um die einzige Instanz der Klasse
@@ -148,12 +150,12 @@ public class Container {
 			throw new PersistenceException( PersistenceException.ExceptionType.NoStrategyIsSet,
 					"Strategy not initialized");
 
-		this.openReadConnection();
-
+		if (connectionOpen == false) {
+			this.openConnection();
+			connectionOpen = true;
+		}
 		List<Member> liste = this.strategy.load();
 		this.liste = liste; // MayBe merge
-
-		this.closeReadConnection();
 	}
 
 	/**
@@ -165,6 +167,14 @@ public class Container {
 	 * @param persistenceStrategy
 	 */
 	public void setPersistenceStrategie(PersistenceStrategy persistenceStrategy) {
+		if (connectionOpen == true) {
+			try {
+				this.closeConnection();
+			} catch (PersistenceException e) {
+				// ToDo here: delegate to client (next year maybe ;-))
+				e.printStackTrace();
+			}
+		}
 		this.strategy = persistenceStrategy;
 	}
 
@@ -179,25 +189,17 @@ public class Container {
 					ExceptionType.NoStrategyIsSet,
 					"Strategy not initialized");
 
-		this.openWriteConnection();
-
+		if (connectionOpen == false) {
+			this.openConnection();
+			connectionOpen = true;
+		}
 		this.strategy.save( this.liste  );
-
-		this.closeWriteConnection();
 	}
 
-	private void openReadConnection() throws PersistenceException {
+	private void openConnection() throws PersistenceException {
 		try {
-			this.strategy.openReadConnection();
-		} catch( UnsupportedOperationException e ) {
-			throw new PersistenceException(
-					PersistenceException.ExceptionType.ImplementationNotAvailable ,
-					"Not implemented!" );
-		}
-	}
-	private void openWriteConnection() throws PersistenceException {
-		try {
-			this.strategy.openWriteConnection();
+			this.strategy.openConnection();
+			connectionOpen = true;
 		} catch( UnsupportedOperationException e ) {
 			throw new PersistenceException(
 					PersistenceException.ExceptionType.ImplementationNotAvailable ,
@@ -205,16 +207,10 @@ public class Container {
 		}
 	}
 
-	private void closeReadConnection() throws PersistenceException {
+	private void closeConnection() throws PersistenceException {
 		try {
-			this.strategy.closeReadConnection();
-		} catch( UnsupportedOperationException e ) {
-			throw new PersistenceException( PersistenceException.ExceptionType.ImplementationNotAvailable , "Not implemented!" );
-		}
-	}
-	private void closeWriteConnection() throws PersistenceException {
-		try {
-			this.strategy.closeWriteConnection();
+			this.strategy.closeConnection();
+			connectionOpen = false;
 		} catch( UnsupportedOperationException e ) {
 			throw new PersistenceException( PersistenceException.ExceptionType.ImplementationNotAvailable , "Not implemented!" );
 		}

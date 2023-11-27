@@ -4,21 +4,12 @@ import java.util.List;
 
 public class PersistenceStrategyMongoDB<E> implements PersistenceStrategy<E> {
     @Override
-    public void openReadConnection() throws PersistenceException {
-        throw new UnsupportedOperationException("Not implemented!");
-    }
-
-    public void openWriteConnection() throws PersistenceException {
+    public void openConnection() throws PersistenceException {
         throw new UnsupportedOperationException("Not implemented!");
     }
 
     @Override
-    public void closeReadConnection() throws PersistenceException {
-        throw new UnsupportedOperationException("Not implemented!");
-    }
-
-    @Override
-    public void closeWriteConnection() throws PersistenceException {
+    public void closeConnection() throws PersistenceException {
         throw new UnsupportedOperationException("Not implemented!");
     }
 
