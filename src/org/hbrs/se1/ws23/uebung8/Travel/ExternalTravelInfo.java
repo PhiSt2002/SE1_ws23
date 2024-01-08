@@ -6,6 +6,7 @@ package org.hbrs.se1.ws23.uebung8.Travel;
 
 public class ExternalTravelInfo {
 
+    // Bespiel Code
     public ExternalTravelInfo() {
 
 
