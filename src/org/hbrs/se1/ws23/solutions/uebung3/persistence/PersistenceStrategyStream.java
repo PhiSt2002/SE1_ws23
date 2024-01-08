@@ -20,39 +20,32 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         this.LOCATION = LOCATION;
     }
 
+
     @Override
-    /**
-     * Used only for openining a connection for storing objects
-     * Exception occurs in some SDKs, when both are created (TODO!)
-     * Workaround: open the Streams in the load method
-     */
     public void openConnection() throws PersistenceException {
         try {
-            fos = new FileOutputStream( LOCATION );
             fis = new FileInputStream( LOCATION );
         } catch (FileNotFoundException e) {
             throw new PersistenceException( PersistenceException.ExceptionType.ConnectionNotAvailable
-            , "Error in opening the connection, File could not be found");
+                    , "Error in opening the connection, File could not be found");
         }
         try {
-            oos = new ObjectOutputStream( fos );
             ois = new ObjectInputStream(  fis  );
         } catch (IOException e) {
             throw new PersistenceException( PersistenceException.ExceptionType.ConnectionNotAvailable
                     , "Error in opening the connection, problems with the stream");
         }
+        //outputstreams are handled inside store()
     }
 
     @Override
     public void closeConnection() throws PersistenceException {
         try {
-            // Closing the outputstreams for storing
-            if (oos != null) oos.close();
-            if (fos != null) fos.close();
-
             // Closing the inputstreams for loading
             if (ois != null) ois.close();
             if (fis != null) fis.close();
+
+            //outputstreams are handled inside store()
         } catch( IOException e ) {
             // Lazy solution: catching the exception of any closing activity ;-)
             throw new PersistenceException(PersistenceException.ExceptionType.ClosingFailure , "error while closing connections");
@@ -66,8 +59,14 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
     public void save(List<E> list) throws PersistenceException {
         // Write the objects to stream
         try {
+            fos = new FileOutputStream( LOCATION );
+            oos = new ObjectOutputStream( fos );
+
             System.out.println( "LOG: Es wurden " +  list.size() + " Member-Objekte wurden erfolgreich gespeichert!");
             oos.writeObject( list );
+
+            oos.close();
+            fos.close();
         }
         catch (IOException e) {
             // Koennte man ausgeben für interne Debugs: e.printStackTrace();
@@ -89,11 +88,6 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         List<E> list = null;
 
         try {
-            // Create Streams here instead using "this.openConnection();"
-            // Workaround!
-            // fis = new FileInputStream( LOCATION );
-            // ois = new ObjectInputStream( fis );
-
             // Auslesen der Liste
             Object obj = ois.readObject();
             if (obj instanceof List<?>) {
